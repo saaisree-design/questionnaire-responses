@@ -1,0 +1,51 @@
+name: collection watchdog
+# Opens a GitHub issue (which emails you) if the questionnaire link stops
+# accepting responses. Set a repository variable WORKER_URL to your Worker's
+# address, e.g. https://questionnaire.you.workers.dev
+# Repo > Settings > Secrets and variables > Actions > Variables > New variable.
+on:
+  schedule:
+    - cron: "0 7 * * *"     # every day, 07:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ask the worker whether it can still write to this repo
+        id: probe
+        run: |
+          URL="${{ vars.WORKER_URL }}"
+          if [ -z "$URL" ]; then echo "set the WORKER_URL repository variable"; exit 1; fi
+          BODY=$(curl -s --max-time 20 "$URL/healthz" || echo '{"ok":false,"storage":"no response from the worker"}')
+          echo "body=$BODY" >> "$GITHUB_OUTPUT"
+          echo "$BODY"
+          echo "$BODY" | grep -q '"ok":true' || echo "broken=yes" >> "$GITHUB_OUTPUT"
+      - name: raise an issue if it is broken
+        if: steps.probe.outputs.broken == 'yes'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `The questionnaire link is not accepting responses.
+
+            Health check said:
+            \`\`\`
+            ${{ toJSON(steps.probe.outputs.body) }}
+            \`\`\`
+
+            Most likely causes: the GitHub token expired or was revoked, its
+            permissions changed, or the repository moved. Generate a new
+            fine-grained token with Contents: Read and write on this repo and
+            update the GH_TOKEN secret on the Cloudflare Worker.`;
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: "open", labels: "collection-down" });
+            if (existing.data.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title: "Questionnaire link is down", body, labels: ["collection-down"] });
+            }
