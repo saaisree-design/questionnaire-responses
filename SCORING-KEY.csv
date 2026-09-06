@@ -1,0 +1,99 @@
+column,section,item,instrument,scale,scale_name,keyed,text
+a1,A,1,IPIP-50,E,Extraversion,+,Am the life of the party.
+a2,A,2,IPIP-50,A,Agreeableness,-,Feel little concern for others.
+a3,A,3,IPIP-50,C,Conscientiousness,+,Am always prepared.
+a4,A,4,IPIP-50,S,Emotional stability,-,Get stressed out easily.
+a5,A,5,IPIP-50,O,Openness,+,Have a rich vocabulary.
+a6,A,6,IPIP-50,E,Extraversion,-,Don't talk a lot.
+a7,A,7,IPIP-50,A,Agreeableness,+,Am interested in people.
+a8,A,8,IPIP-50,C,Conscientiousness,-,Leave my belongings around.
+a9,A,9,IPIP-50,S,Emotional stability,+,Am relaxed most of the time.
+a10,A,10,IPIP-50,O,Openness,-,Have difficulty understanding abstract ideas.
+a11,A,11,IPIP-50,E,Extraversion,+,Feel comfortable around people.
+a12,A,12,IPIP-50,A,Agreeableness,-,Insult people.
+a13,A,13,IPIP-50,C,Conscientiousness,+,Pay attention to details.
+a14,A,14,IPIP-50,S,Emotional stability,-,Worry about things.
+a15,A,15,IPIP-50,O,Openness,+,Have a vivid imagination.
+a16,A,16,IPIP-50,E,Extraversion,-,Keep in the background.
+a17,A,17,IPIP-50,A,Agreeableness,+,Sympathize with others' feelings.
+a18,A,18,IPIP-50,C,Conscientiousness,-,Make a mess of things.
+a19,A,19,IPIP-50,S,Emotional stability,+,Seldom feel blue.
+a20,A,20,IPIP-50,O,Openness,-,Am not interested in abstract ideas.
+a21,A,21,IPIP-50,E,Extraversion,+,Start conversations.
+a22,A,22,IPIP-50,A,Agreeableness,-,Am not interested in other people's problems.
+a23,A,23,IPIP-50,C,Conscientiousness,+,Get chores done right away.
+a24,A,24,IPIP-50,S,Emotional stability,-,Am easily disturbed.
+a25,A,25,IPIP-50,O,Openness,+,Have excellent ideas.
+a26,A,26,IPIP-50,E,Extraversion,-,Have little to say.
+a27,A,27,IPIP-50,A,Agreeableness,+,Have a soft heart.
+a28,A,28,IPIP-50,C,Conscientiousness,-,Often forget to put things back in their proper place.
+a29,A,29,IPIP-50,S,Emotional stability,-,Get upset easily.
+a30,A,30,IPIP-50,O,Openness,-,Do not have a good imagination.
+a31,A,31,IPIP-50,E,Extraversion,+,Talk to a lot of different people at parties.
+a32,A,32,IPIP-50,A,Agreeableness,-,Am not really interested in others.
+a33,A,33,IPIP-50,C,Conscientiousness,+,Like order.
+a34,A,34,IPIP-50,S,Emotional stability,-,Change my mood a lot.
+a35,A,35,IPIP-50,O,Openness,+,Am quick to understand things.
+a36,A,36,IPIP-50,E,Extraversion,-,Don't like to draw attention to myself.
+a37,A,37,IPIP-50,A,Agreeableness,+,Take time out for others.
+a38,A,38,IPIP-50,C,Conscientiousness,-,Shirk my duties.
+a39,A,39,IPIP-50,S,Emotional stability,-,Have frequent mood swings.
+a40,A,40,IPIP-50,O,Openness,+,Use difficult words.
+a41,A,41,IPIP-50,E,Extraversion,+,Don't mind being the center of attention.
+a42,A,42,IPIP-50,A,Agreeableness,+,Feel others' emotions.
+a43,A,43,IPIP-50,C,Conscientiousness,+,Follow a schedule.
+a44,A,44,IPIP-50,S,Emotional stability,-,Get irritated easily.
+a45,A,45,IPIP-50,O,Openness,+,Spend time reflecting on things.
+a46,A,46,IPIP-50,E,Extraversion,-,Am quiet around strangers.
+a47,A,47,IPIP-50,A,Agreeableness,+,Make people feel at ease.
+a48,A,48,IPIP-50,C,Conscientiousness,+,Am exacting in my work.
+a49,A,49,IPIP-50,S,Emotional stability,-,Often feel blue.
+a50,A,50,IPIP-50,O,Openness,+,Am full of ideas.
+b1,B,1,OEJTS 1.1,IE,Introversion-Extraversion,+,gets worn out by parties | gets fired up by parties
+b2,B,2,OEJTS 1.1,SN,Sensing-Intuition,+,starts over when they fail | tries something new when they fail
+b3,B,3,OEJTS 1.1,FT,Feeling-Thinking,-,uncomfortable with emotions | values emotions
+b4,B,4,OEJTS 1.1,JP,Judging-Perceiving,+,plans far ahead | plans at the last minute
+b5,B,5,OEJTS 1.1,IE,Introversion-Extraversion,-,works best in groups | works best alone
+b6,B,6,OEJTS 1.1,SN,Sensing-Intuition,-,theoretical | empirical
+b7,B,7,OEJTS 1.1,FT,Feeling-Thinking,+,follows the heart | follows the head
+b8,B,8,OEJTS 1.1,JP,Judging-Perceiving,-,rebellious | ambitious
+b9,B,9,OEJTS 1.1,IE,Introversion-Extraversion,+,wants deep friendships | wants many friendships
+b10,B,10,OEJTS 1.1,SN,Sensing-Intuition,+,focused on the present | focused on the future
+b11,B,11,OEJTS 1.1,FT,Feeling-Thinking,-,bases morality on justice | bases morality on compassion
+b12,B,12,OEJTS 1.1,JP,Judging-Perceiving,+,gets work done right away | procrastinates
+b13,B,13,OEJTS 1.1,IE,Introversion-Extraversion,-,likes to perform in front of other people | avoids public speaking
+b14,B,14,OEJTS 1.1,SN,Sensing-Intuition,-,wants to live forever | wants a normal lifespan
+b15,B,15,OEJTS 1.1,FT,Feeling-Thinking,+,uses instinct | uses reason
+b16,B,16,OEJTS 1.1,JP,Judging-Perceiving,-,chaotic | organized
+b17,B,17,OEJTS 1.1,IE,Introversion-Extraversion,+,finds it difficult to yell very loudly | yelling to others when they are far away comes naturally
+b18,B,18,OEJTS 1.1,SN,Sensing-Intuition,+,relaxes | daydreams
+b19,B,19,OEJTS 1.1,FT,Feeling-Thinking,-,judges a painting on how realistic it is | judges a painting on the feeling it conveys
+b20,B,20,OEJTS 1.1,JP,Judging-Perceiving,+,works hard | plays hard
+b21,B,21,OEJTS 1.1,IE,Introversion-Extraversion,-,bored by time alone | needs time alone
+b22,B,22,OEJTS 1.1,SN,Sensing-Intuition,-,wants the big picture | wants the details
+b23,B,23,OEJTS 1.1,FT,Feeling-Thinking,+,easily hurt | thick-skinned
+b24,B,24,OEJTS 1.1,JP,Judging-Perceiving,-,keeps options open | commits
+b25,B,25,OEJTS 1.1,IE,Introversion-Extraversion,+,has difficulty explaining their ideas | confident explaining their ideas
+b26,B,26,OEJTS 1.1,SN,Sensing-Intuition,+,prefers to take a multiple choice test | prefers essay answers
+b27,B,27,OEJTS 1.1,FT,Feeling-Thinking,-,sceptical | wants to believe
+b28,B,28,OEJTS 1.1,JP,Judging-Perceiving,+,keeps a clean room | just puts stuff wherever
+b29,B,29,OEJTS 1.1,IE,Introversion-Extraversion,-,talks more | listens more
+b30,B,30,OEJTS 1.1,SN,Sensing-Intuition,-,likes stories with lots of twists | likes stories with lots of action
+b31,B,31,OEJTS 1.1,FT,Feeling-Thinking,+,seeks harmony | seeks clarity
+b32,B,32,OEJTS 1.1,JP,Judging-Perceiving,-,improvises | prepares
+b33,B,33,OEJTS 1.1,IE,Introversion-Extraversion,+,stays at home | goes out on the town
+b34,B,34,OEJTS 1.1,SN,Sensing-Intuition,+,accepts things as they are | unsatisfied with the way things are
+b35,B,35,OEJTS 1.1,FT,Feeling-Thinking,-,wants people's respect | wants their love
+b36,B,36,OEJTS 1.1,JP,Judging-Perceiving,+,needs to work | only works because they must
+b37,B,37,OEJTS 1.1,IE,Introversion-Extraversion,-,leads from the front | manipulates things behind the scenes
+b38,B,38,OEJTS 1.1,SN,Sensing-Intuition,+,fits in | stands out
+b39,B,39,OEJTS 1.1,FT,Feeling-Thinking,+,thinks “robotic” is an insult | strives to have a mechanical mind
+b40,B,40,OEJTS 1.1,JP,Judging-Perceiving,+,makes lists | relies on memory
+b41,B,41,OEJTS 1.1,IE,Introversion-Extraversion,+,keeps the room door closed | leaves the door open
+b42,B,42,OEJTS 1.1,SN,Sensing-Intuition,+,"when describing an event, tells people what happened | when describing an event, tells people what it meant"
+b43,B,43,OEJTS 1.1,FT,Feeling-Thinking,-,wants to be good at fixing things | wants to be good at fixing people
+b44,B,44,OEJTS 1.1,JP,Judging-Perceiving,+,does a good job handling the preparation | does a good job handling the fallout
+b45,B,45,OEJTS 1.1,IE,Introversion-Extraversion,-,energetic | mellow
+b46,B,46,OEJTS 1.1,SN,Sensing-Intuition,+,"likes to know “who?”, “what?”, “when?” | likes to know “why?”"
+b47,B,47,OEJTS 1.1,FT,Feeling-Thinking,+,cares if something is good or bad | cares if something is true or false
+b48,B,48,OEJTS 1.1,JP,Judging-Perceiving,+,does their best | does what they need to get by
