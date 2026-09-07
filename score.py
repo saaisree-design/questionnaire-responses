@@ -1,26 +1,26 @@
 #!/usr/bin/env python3
 """Scores every collected response and writes a report for each person.
- 
+
 Run it locally after downloading the repo, or let the GitHub Action run it
 automatically whenever a new response arrives:
- 
+
     python3 score.py
- 
+
 Produces:
     scores.csv          one row per person, every scale score, for your own analysis
     reports/index.html  list of everyone, newest first
     reports/<id>.html   one readable report per person, printable to PDF
- 
+
 Only the standard library is used, so it runs anywhere Python runs with nothing
 to install.
- 
+
 A note on what this does and does not claim. Scoring is arithmetic and is exact.
 The written interpretation is a set of rules applied to those numbers: it
 describes tendencies people who answer this way tend to report, hedged
 accordingly. It is not a diagnosis, not a measure of ability, and not a
 selection instrument. Both questionnaires are self-report snapshots taken once.
 """
- 
+
 import csv
 import html
 import json
@@ -28,11 +28,11 @@ import pathlib
 import statistics
 from collections import Counter
 from datetime import datetime, timezone
- 
+
 HERE = pathlib.Path(__file__).resolve().parent
 RESPONSES = HERE / "responses"
 REPORTS = HERE / "reports"
- 
+
 # ─────────────────────────────────────────────────────────── scoring keys
 # Section A: (scale, keyed sign). Section B: (scale, keyed sign).
 # +1 scores the answer as given, -1 scores 6 - answer.
@@ -60,7 +60,7 @@ B_KEY = {
     41: ("IE", 1), 42: ("SN", 1), 43: ("FT", -1), 44: ("JP", 1), 45: ("IE", -1),
     46: ("SN", 1), 47: ("FT", 1), 48: ("JP", 1),
 }
- 
+
 TRAITS = {
     "E": ("Extraversion", "outward energy and sociability", "#2F6F6B"),
     "A": ("Agreeableness", "warmth and regard for others", "#7A4A63"),
@@ -77,7 +77,7 @@ DICHS = {
     "JP": ("Judging", "Perceiving", "J", "P", "how the outside world is handled", "#3E5C76"),
 }
 MID = 36
- 
+
 # Reference percentiles for section B, pooled from the two published comparison
 # datasets (2,923 complete response sets). Index 0 is a score of 12.
 REF = {
@@ -87,10 +87,10 @@ REF = {
     "FT": dict(mean=35.8, alpha=.82, pct=[0.1,0.2,0.2,0.3,0.6,1.1,1.8,2.6,3.5,4.8,6.4,8.1,9.9,12.1,14.4,17.4,21.0,24.3,27.6,31.3,35.5,39.8,44.0,48.6,53.2,57.6,61.4,64.9,68.3,71.3,74.3,77.1,79.8,82.4,85.2,87.8,90.0,91.9,93.3,94.5,95.8,96.9,97.6,98.2,98.8,99.2,99.6,99.8,100]),
     "JP": dict(mean=35.2, alpha=.83, pct=[0.1,0.2,0.4,0.5,0.9,1.5,2.3,3.1,4.2,5.7,7.3,9.3,11.5,14.0,16.8,20.0,23.2,26.6,30.2,33.9,37.6,41.5,45.6,49.6,53.4,57.1,61.0,64.8,68.6,72.1,75.4,78.8,82.2,85.4,88.0,90.1,92.1,93.7,95.0,96.2,97.1,97.7,98.4,99.0,99.4,99.7,99.9,99.9,100]),
 }
- 
- 
+
+
 # ─────────────────────────────────────────────────────────── scoring
- 
+
 def score_response(rec):
     """Raw answers to scale scores. Blank answers count as the neutral middle."""
     ans = rec.get("answers", {})
@@ -116,8 +116,8 @@ def score_response(rec):
         for k in ("IE", "SN", "FT", "JP"))
     return dict(traits=traits, dichs=dichs, type=letters,
                 answered_a=a_given, answered_b=b_given)
- 
- 
+
+
 def trait_band(v):
     """Five bands across the 10-50 range of a trait scale."""
     if v >= 42: return "very high"
@@ -125,16 +125,16 @@ def trait_band(v):
     if v >= 26: return "moderate"
     if v >= 19: return "low"
     return "very low"
- 
- 
+
+
 def lean(distance):
     d = abs(distance)
     if d <= 2: return "borderline"
     if d <= 6: return "slight"
     if d <= 14: return "clear"
     return "strong"
- 
- 
+
+
 def quality_flags(rec, scored):
     """Signals that a set of answers may not be worth interpreting."""
     flags = []
@@ -158,10 +158,10 @@ def quality_flags(rec, scored):
     if missing:
         flags.append(("incomplete", f"{missing} items left blank and scored as neutral"))
     return flags
- 
- 
+
+
 # ─────────────────────────────────────────────────────────── written interpretation
- 
+
 TRAIT_TEXT = {
     "E": {
         "very high": "Strongly outward-facing. Seeks people out, talks early and often, and gains energy from busy environments rather than spending it.",
@@ -199,7 +199,7 @@ TRAIT_TEXT = {
         "very low": "Strongly concrete. Little patience for abstraction or theory; wants specifics and precedent.",
     },
 }
- 
+
 DICH_TEXT = {
     "IE": ("Draws energy from solitude, thinks before speaking, and prefers depth over breadth in relationships.",
            "Draws energy from company, thinks by talking, and prefers a wide circle of contact."),
@@ -210,8 +210,8 @@ DICH_TEXT = {
     "JP": ("Closes decisions early, plans ahead, prefers matters settled.",
            "Keeps options open, decides late, prefers room to adapt."),
 }
- 
- 
+
+
 # Four themes that always appear, each driven by the trait most relevant to it,
 # with the matching preference used as a modifier. Written so that a profile
 # sitting in the middle of everything still gets a real reading rather than a
@@ -246,7 +246,7 @@ THEMES = {
         "very low": "Strongly concrete. Little appetite for theory or speculation. Most effective with defined problems, clear methods and observable results.",
     }),
 }
- 
+
 DICH_MODIFIER = {
     "Working style": ("JP", "Judging", "Perceiving",
         "The preference measure agrees: settled plans over open options.",
@@ -258,8 +258,8 @@ DICH_MODIFIER = {
         "The preference measure agrees, leaning to the concrete and verifiable.",
         "The preference measure agrees, leaning to patterns and possibilities."),
 }
- 
- 
+
+
 def theme_sections(t, d, band):
     """The four always-present readings, with agreement noted where it exists."""
     out = []
@@ -280,8 +280,8 @@ def theme_sections(t, d, band):
                     text += " " + (low_txt if dist < 0 else high_txt)
         out.append((heading, text))
     return out
- 
- 
+
+
 def standout(t, band):
     """Highest and lowest trait within this person's own profile."""
     order = sorted(TRAITS, key=lambda k: t[k])
@@ -297,15 +297,15 @@ def standout(t, band):
             f"{TRAITS[lowk][0].lower()} lowest ({t[lowk]}). Comparing someone against themselves like this is often "
             f"more useful than comparing them against other people: it points at which of the readings above is "
             f"likely to be most visible day to day, and which is least.")
- 
- 
+
+
 # Combination rules. Each is (condition, heading, paragraph). Only the ones that
 # fire appear in the report, so nobody gets a page of contradictions.
 def combination_rules(t, d, band):
     hi = lambda k: band(t[k]) in ("high", "very high")
     lo = lambda k: band(t[k]) in ("low", "very low")
     n = lambda k: d[k] - MID
- 
+
     rules = [
         (hi("C") and n("JP") < -6, "Working style",
          "Both measures point the same way on structure. Expect plans made early, work finished ahead of deadline, "
@@ -365,8 +365,8 @@ def combination_rules(t, d, band):
             seen.add(heading)
             out.append((heading, text))
     return out
- 
- 
+
+
 def tensions(t, d, band):
     """Places where the two instruments disagree, stated plainly."""
     out = []
@@ -383,22 +383,22 @@ def tensions(t, d, band):
             out.append(f"{tname} and {dname} point in noticeably different directions "
                        f"({gap:.0f} points apart on comparable scales). Treat both as provisional on this dimension.")
     return out
- 
- 
+
+
 # ─────────────────────────────────────────────────────────── html
- 
+
 def ordinal(n):
     n = round(n)
     if 10 <= n % 100 <= 20:
         return f"{n}th"
     return f"{n}{ {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th') }".replace(" ", "")
- 
- 
+
+
 def bar(pos, colour, mid=True):
     return (f'<div class="bar"><span class="fill" style="width:{pos*100:.1f}%;background:{colour}"></span>'
             + ('<span class="mid"></span>' if mid else "") + "</div>")
- 
- 
+
+
 CSS = """
 :root{--form:#DDE4DF;--sheet:#FBFBF8;--alt:#F4F6F1;--ink:#22272A;--ink2:#5D686B;--ink3:#8C979A;--mark:#B3402E;
 --sans:"IBM Plex Sans",-apple-system,"Segoe UI",Roboto,sans-serif;--serif:"IBM Plex Serif",Palatino,Georgia,serif}
@@ -441,26 +441,26 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;padding-right:14px}
 a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 @media print{body{background:#fff}.sheet{box-shadow:none;page-break-inside:avoid;padding:0 0 18px}}
 """
- 
+
 HEAD = """<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex">
 <title>__TITLE__</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
 <style>%s</style></head><body><div class="wrap">""" % CSS
- 
+
 E = html.escape
- 
- 
+
+
 def report_html(rec, scored, sample_pct):
     t, d = scored["traits"], scored["dichs"]
     flags = quality_flags(rec, scored)
     when = (rec.get("received_at") or "")[:10]
     secs = int((rec.get("elapsed_ms") or 0) / 1000)
     ref_n = f"{REF['n']:,}"
- 
+
     parts = [HEAD.replace("__TITLE__", f"Report {E(rec.get('id',''))}")]
- 
+
     # cover
     parts.append('<section class="sheet"><h1>Behavioural profile</h1>')
     parts.append(f'<p class="sub">Reference {E(rec.get("id",""))} &middot; completed {E(when)}</p>')
@@ -480,7 +480,7 @@ def report_html(rec, scored, sample_pct):
     parts.append('<p class="lede" style="margin-top:18px">This report is generated from two self-report '
                  'questionnaires answered on one occasion. It describes tendencies the person reported about '
                  'themselves, not abilities, and not a diagnosis.</p></section>')
- 
+
     # trait profile
     parts.append('<section class="sheet"><h2>Trait profile</h2>')
     parts.append('<p class="sub">Five broad traits, each scored from 10 to 50 out of ten items. The mark in the '
@@ -498,7 +498,7 @@ def report_html(rec, scored, sample_pct):
         parts.append(f'<div class="band">{b}{pct_txt}</div>')
         parts.append(f'<p class="desc">{TRAIT_TEXT[k][b]}</p></div>')
     parts.append("</section>")
- 
+
     # type profile
     parts.append('<section class="sheet"><h2>Preference profile</h2>')
     parts.append(f'<div class="type">{E(scored["type"])}</div>')
@@ -525,7 +525,7 @@ def report_html(rec, scored, sample_pct):
                          '(&alpha; = .55 against .82, .82 and .83). Weight it accordingly.</p>')
         parts.append("</div>")
     parts.append("</section>")
- 
+
     # behavioural reading
     parts.append('<section class="sheet"><h2>What this tends to look like in practice</h2>')
     parts.append('<p class="sub">Each reading below is driven by the scores above. Where the second questionnaire '
@@ -535,7 +535,7 @@ def report_html(rec, scored, sample_pct):
     sh, st = standout(t, trait_band)
     parts.append(f"<h3>{E(sh)}</h3><p>{st}</p>")
     parts.append("</section>")
- 
+
     combos = combination_rules(t, d, trait_band)
     if combos:
         parts.append('<section class="sheet"><h2>Patterns from combinations of scores</h2>')
@@ -544,7 +544,7 @@ def report_html(rec, scored, sample_pct):
         for heading, text in combos:
             parts.append(f"<h3>{E(heading)}</h3><p>{text}</p>")
         parts.append("</section>")
- 
+
     # disagreements
     tens = tensions(t, d, trait_band)
     parts.append('<section class="sheet"><h2>Agreement between the two questionnaires</h2>')
@@ -559,7 +559,7 @@ def report_html(rec, scored, sample_pct):
                      'weighed, and structure — agree across both questionnaires. That consistency is the main reason '
                      'to take the profile above seriously.</p>')
     parts.append("</section>")
- 
+
     # limits
     parts.append('<section class="sheet"><h2>How far to trust this</h2>'
                  '<p class="foot">Scores are arithmetic and exact. The written interpretation applies fixed rules '
@@ -573,11 +573,11 @@ def report_html(rec, scored, sample_pct):
                  'conversation, not for deciding about someone.</p>'
                  '<p class="foot">The instruments are open-source research measures. The preference measure is not '
                  'the MBTI and is not affiliated with it.</p></section>')
- 
+
     parts.append("</div></body></html>")
     return "".join(parts)
- 
- 
+
+
 def index_html(rows):
     parts = [HEAD.replace("__TITLE__", "Reports"), '<section class="sheet"><h1>Reports</h1>',
              f'<p class="sub">{len(rows)} response{"s" if len(rows) != 1 else ""}, newest first.</p>',
@@ -593,10 +593,10 @@ def index_html(rows):
                      + f'<td>{flags}</td><td><a href="{E(r["file"])}">open</a></td></tr>')
     parts.append("</tbody></table></section></div></body></html>")
     return "".join(parts)
- 
- 
+
+
 # ─────────────────────────────────────────────────────────── main
- 
+
 def load():
     out = []
     if not RESPONSES.exists():
@@ -607,26 +607,26 @@ def load():
         except json.JSONDecodeError:
             print(f"  skipping unreadable file: {f.name}")
     return out
- 
- 
+
+
 def percentile_rank(values, v):
     below = sum(1 for x in values if x < v)
     equal = sum(1 for x in values if x == v)
     return round((below + equal / 2) / len(values) * 100)
- 
- 
+
+
 def main():
     records = load()
     if not records:
         print("no responses yet — nothing to score")
         return
     scored = [(r, score_response(r)) for r in records]
- 
+
     # percentiles within your own sample, only once there are enough people
     # for the number to mean anything
     dist = {k: [s["traits"][k] for _, s in scored] for k in TRAITS}
     enough = len(scored) >= 25
- 
+
     REPORTS.mkdir(exist_ok=True)
     rows = []
     for rec, sc in scored:
@@ -635,10 +635,10 @@ def main():
         fname = f"{rid}.html"
         (REPORTS / fname).write_text(report_html(rec, sc, pct), encoding="utf-8")
         rows.append(dict(rec=rec, scored=sc, flags=quality_flags(rec, sc), file=fname))
- 
+
     rows.sort(key=lambda r: r["rec"].get("received_at") or "", reverse=True)
     (REPORTS / "index.html").write_text(index_html(rows), encoding="utf-8")
- 
+
     cols = (["id", "received_at", "email", "elapsed_ms", "answered", "type"]
             + list(TRAITS) + list(DICHS) + ["flags"])
     with (HERE / "scores.csv").open("w", newline="", encoding="utf-8") as fh:
@@ -653,7 +653,7 @@ def main():
                 **sc["traits"], **sc["dichs"],
                 "flags": "|".join(n for n, _ in r["flags"]),
             })
- 
+
     types = Counter(r["scored"]["type"] for r in rows)
     print(f"scored {len(rows)} response(s)")
     print(f"  reports/index.html and {len(rows)} individual report(s)")
@@ -665,14 +665,7 @@ def main():
         print(f"  {flagged} response(s) carry a data-quality flag")
     if types:
         print("  most common codes: " + ", ".join(f"{t} x{c}" for t, c in types.most_common(3)))
- 
- 
+
+
 if __name__ == "__main__":
     main()
- 
-
-
-
-
-
-
