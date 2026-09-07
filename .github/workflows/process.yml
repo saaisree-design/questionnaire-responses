@@ -1,78 +1,69 @@
-
-Process · YML
 name: process responses
-# When a new response lands: rebuild the CSV, score everyone, regenerate the
-# reports, and email you the report for whatever is new in this push.
+
 on:
   push:
-    paths: ["responses/**"]
+    paths:
+      - "responses/**"
   workflow_dispatch:
- 
+
 permissions:
   contents: write
- 
+
 concurrency:
   group: process-responses
   cancel-in-progress: false
- 
+
 jobs:
   process:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0          # needed to see what changed in this push
- 
+          fetch-depth: 0
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
- 
-      - name: work out which responses are new in this push
+
+      - name: Find new responses
         id: changed
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
         run: |
-          BEFORE="${{ github.event.before }}"
-          if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ] \
-             || ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
-            NEW=""                # first run or forced push: notify.py falls back to the newest file
-          else
-            NEW=$(git diff --name-only --diff-filter=A "$BEFORE" "${{ github.sha }}" -- 'responses/*.json' | tr '\n' ' ')
+          NEW=""
+          if [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            NEW=$(git diff --name-only --diff-filter=A "$BEFORE" "$AFTER" -- 'responses/*.json' | tr '\n' ' ')
           fi
           echo "new=$NEW" >> "$GITHUB_OUTPUT"
-          echo "new response files: ${NEW:-（none detected, will use the newest）}"
- 
-      - name: build responses.csv
+          echo "New response files: $NEW"
+
+      - name: Build responses.csv
         run: python collate.py
- 
-      - name: score everyone and write the reports
+
+      - name: Score and write reports
         run: python score.py
- 
-      - name: commit whatever changed
+
+      - name: Commit changes
         run: |
           git config user.name "report bot"
           git config user.email "actions@github.com"
           git add responses.csv scores.csv reports
           if git diff --staged --quiet; then
-            echo "nothing changed"
+            echo "Nothing changed"
           else
-            git commit -m "rebuild responses.csv, scores.csv and reports"
+            git commit -m "Rebuild reports"
             git pull --rebase --autostash || true
             git push
           fi
- 
-      - name: email the new report to you
+
+      - name: Email the report
         env:
-          NOTIFY_TO:      ${{ secrets.NOTIFY_TO }}
-          NOTIFY_FROM:    ${{ secrets.NOTIFY_FROM }}
+          NOTIFY_TO: ${{ secrets.NOTIFY_TO }}
+          NOTIFY_FROM: ${{ secrets.NOTIFY_FROM }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          SMTP_HOST:      ${{ secrets.SMTP_HOST }}
-          SMTP_PORT:      ${{ secrets.SMTP_PORT }}
-          SMTP_USER:      ${{ secrets.SMTP_USER }}
-          SMTP_PASS:      ${{ secrets.SMTP_PASS }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
         run: python notify.py ${{ steps.changed.outputs.new }}
- 
-
-
-
-
-
-
