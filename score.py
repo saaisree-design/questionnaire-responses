@@ -1,5 +1,3 @@
-
-Score · PY
 #!/usr/bin/env python3
 """Scores every collected response and writes a report for each person.
  
